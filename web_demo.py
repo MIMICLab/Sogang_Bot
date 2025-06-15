@@ -1,5 +1,3 @@
-#!/usr/bin/env python3
-
 from __future__ import annotations
 import faulthandler, sys; faulthandler.enable(file=sys.stderr)
 
@@ -60,12 +58,72 @@ def main():
     p.add_argument("--share", action="store_true")
     args = p.parse_args()
 
-    # Custom CSS for modern chat interface with specified CMYK colors
+    # Custom CSS with mobile-responsive design (dark mode ignored)
     custom_css = """
+    /* 다크모드 무시하고 항상 라이트 모드 사용 */
+    * {
+        color-scheme: light !important;
+    }
+    
+    /* 모바일 반응형 디자인 */
+    @media (max-width: 768px) {
+        .gradio-container {
+            padding: 12px !important;
+        }
+        
+        h1 {
+            font-size: 1.8rem !important;
+        }
+        
+        .subtitle {
+            font-size: 0.9rem !important;
+        }
+        
+        #chatbot {
+            height: calc(100vh - 280px) !important;
+            min-height: 300px !important;
+        }
+    }
+    
+    /* 데스크톱 뷰 */
+    @media (min-width: 769px) {
+        #chatbot {
+            height: 450px !important;
+        }
+    }
+    
+    /* 항상 라이트 모드 색상 사용 */
+    .gradio-container {
+        background-color: #fafafa !important;
+        max-width: 900px !important;
+        margin: auto !important;
+        padding: 24px !important;
+    }
+    
     #chatbot {
-        height: 600px !important;
         border-radius: 12px;
         box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+        overflow-y: auto;
+        background-color: white !important;
+    }
+    
+    /* 채팅창 내부 컨테이너도 흰색으로 강제 */
+    #chatbot .wrapper,
+    #chatbot .container,
+    #chatbot .message-wrap,
+    #chatbot > div {
+        background-color: white !important;
+    }
+    
+    /* 다크모드에서도 채팅창은 항상 흰색 */
+    @media (prefers-color-scheme: dark) {
+        #chatbot,
+        #chatbot .wrapper,
+        #chatbot .container,
+        #chatbot .message-wrap,
+        #chatbot > div {
+            background-color: white !important;
+        }
     }
     
     .message-wrap {
@@ -75,16 +133,30 @@ def main():
     
     .user.message {
         background-color: #f5f5f5 !important;
-        border: 1px solid #A6A6A6;
-        color: #333;
+        border: 1px solid #A6A6A6 !important;
+        color: #333 !important;
+    }
+    
+    .user.message p,
+    .user.message span,
+    .user.message div {
+        color: #333 !important;
     }
     
     .bot.message {
         background-color: #fff5f5 !important;
-        border: 1px solid #B20000;
+        border: 1px solid #B20000 !important;
         position: relative;
         padding-left: 16px !important;
-        color: #333;
+        color: #333 !important;
+    }
+    
+    .bot.message p,
+    .bot.message span,
+    .bot.message div,
+    .bot.message li,
+    .bot.message strong {
+        color: #333 !important;
     }
     
     /* 중복 아바타 제거 */
@@ -94,18 +166,11 @@ def main():
     
     #input-row {
         border-radius: 12px;
-        background-color: #f9f9f9;
+        background-color: #f9f9f9 !important;
         padding: 16px;
         margin-top: 16px;
-        box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06);
-        border: 1px solid #A6A6A6;
-    }
-    
-    .gradio-container {
-        max-width: 900px !important;
-        margin: auto !important;
-        padding: 24px !important;
-        background-color: #fafafa;
+        box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+        border: 1px solid #A6A6A6 !important;
     }
     
     h1 {
@@ -120,7 +185,7 @@ def main():
     
     .subtitle {
         text-align: center;
-        color: #A6A6A6;
+        color: #A6A6A6 !important;
         font-size: 1.1rem;
         margin-bottom: 24px;
         font-weight: 500;
@@ -133,7 +198,7 @@ def main():
         padding: 10px 24px;
         font-weight: 600;
         transition: all 0.3s ease;
-        color: white;
+        color: white !important;
     }
     
     #send-btn:hover {
@@ -144,35 +209,82 @@ def main():
     
     #msg-input {
         border-radius: 8px;
-        border: 2px solid #A6A6A6;
+        border: 2px solid #A6A6A6 !important;
         padding: 12px;
         font-size: 16px;
         transition: border-color 0.3s ease;
-        background-color: white;
+        background-color: white !important;
+        color: #333 !important;
+    }
+    
+    #msg-input::placeholder {
+        color: #999 !important;
     }
     
     #msg-input:focus {
-        border-color: #B20000;
+        border-color: #B20000 !important;
         outline: none;
+        background-color: white !important;
+        color: #333 !important;
     }
     
     .gradio-accordion {
         border: 1px solid #A6A6A6 !important;
         border-radius: 8px !important;
         margin-bottom: 16px;
+        background-color: white !important;
     }
     
     .gradio-accordion .label-wrap {
         background-color: #f9f9f9 !important;
         border-radius: 8px 8px 0 0 !important;
+        color: #333 !important;
     }
     
     .examples-holder {
         margin-top: 16px;
-        border: 1px solid #A6A6A6;
+        border: 1px solid #A6A6A6 !important;
         border-radius: 8px;
         padding: 12px;
-        background-color: #fafafa;
+        background-color: #fafafa !important;
+    }
+    
+    .examples-holder button {
+        color: #333 !important;
+        background-color: white !important;
+    }
+    
+    .examples-holder button:hover {
+        background-color: #f0f0f0 !important;
+    }
+    
+    /* 모든 텍스트 강제로 검은색 */
+    .markdown-text,
+    .markdown-text p,
+    .markdown-text span,
+    label,
+    span,
+    p,
+    div {
+        color: #333 !important;
+    }
+    
+    /* 스크롤바 스타일링 */
+    #chatbot::-webkit-scrollbar {
+        width: 8px;
+    }
+    
+    #chatbot::-webkit-scrollbar-track {
+        background: #f0f0f0;
+    }
+    
+    #chatbot::-webkit-scrollbar-thumb {
+        background: #888;
+        border-radius: 4px;
+    }
+    
+    #chatbot::-webkit-scrollbar-thumb:hover {
+        background: #555;
     }
     """
     
@@ -190,8 +302,12 @@ def main():
     # Load chunks
     chunk_index = rc.load_chunks(args.chunks, args.vectors)
     
-    with gr.Blocks(title="🤖 Sogang AI Assistant", css=custom_css, theme=gr.themes.Soft()) as demo:
-        gr.Markdown("# Sogang AI Assistant")
+    with gr.Blocks(
+        title="Sogang AI Assistant", 
+        css=custom_css, 
+        theme=gr.themes.Soft()  # Soft 테마로 다시 변경
+    ) as demo:
+        gr.Markdown("# 🤖 Sogang AI Assistant")
         gr.Markdown("<p class='subtitle'>Powered by MIMIC Lab QueryDoc</p>")
         
         chatbot = gr.Chatbot(
