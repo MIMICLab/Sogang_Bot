@@ -1,0 +1,9 @@
+PyMuPDF
+gradio
+numpy
+sentence-transformers
+tiktoken
+torch
+transformers
+accelerate
+llama_cpp_python
