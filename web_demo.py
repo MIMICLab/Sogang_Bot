@@ -54,7 +54,7 @@ def main():
     p.add_argument("--chunks", default="data/chunks/pages_text_chunks.json")
     p.add_argument("--vectors", default="data/index/pages_text_chunks_vectors.json")
     p.add_argument("--device", choices=["cpu", "cuda", "mps"], default="cpu")
-    p.add_argument("--topk", type=int, default=4)
+    p.add_argument("--topk", type=int, default=5)
     p.add_argument("--share", action="store_true")
     args = p.parse_args()
 
